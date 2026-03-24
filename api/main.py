@@ -21,26 +21,38 @@ from risk_model.risk_engine import compute_risk
 from risk_model.alert_system import alert_system
 from risk_model.database_manager import db_manager
 
-# ==================== CUSTOM STYLED APP ====================
+# ==================== APP CONFIGURATION ====================
 
 app = FastAPI(
-    title="OpsTwin API",
+    title="🛰️ OpsTwin API",
     description="""
-    ## 🛰️ Operational Digital Twin for Risk & Reliability
-    
-    **OpsTwin** is a real-time operational intelligence system that monitors assets, 
-    predicts future states, and provides actionable risk insights.
-    
-    ### Features:
-    - 📡 **Real-time sensor simulation** (temperature, vibration, error codes)
-    - 🧠 **AI-powered risk scoring** (0-1 scale)
-    - 🔔 **Automatic alerts** for high-risk conditions
-    - 📊 **Historical data tracking** with SQLite
-    - 🚀 **REST API** with 14 endpoints
-    
-    ### Quick Links:
-    - [GitHub Repository](https://github.com/ThabangMotsoahae/ops-twin-system)
-    - [Live Demo](https://ops-twin-system-1.onrender.com)
+<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); padding: 25px; border-radius: 12px; color: white; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    <h2 style="margin: 0 0 10px 0; font-size: 28px;">🛰️ OpsTwin API</h2>
+    <p style="margin: 0 0 5px 0; font-size: 16px; opacity: 0.95;"><strong>Operational Digital Twin for Risk & Reliability</strong></p>
+    <p style="margin: 0 0 15px 0; font-size: 14px; opacity: 0.85;">Real-time asset intelligence with AI-powered risk scoring</p>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <span style="background: rgba(72, 187, 120, 0.3); padding: 5px 12px; border-radius: 20px; font-size: 13px;">📡 6 Active Assets</span>
+        <span style="background: rgba(66, 153, 225, 0.3); padding: 5px 12px; border-radius: 20px; font-size: 13px;">⚡ Real-Time Updates (3s)</span>
+        <span style="background: rgba(237, 137, 54, 0.3); padding: 5px 12px; border-radius: 20px; font-size: 13px;">🎯 14 API Endpoints</span>
+        <span style="background: rgba(128, 90, 213, 0.3); padding: 5px 12px; border-radius: 20px; font-size: 13px;">🧠 AI Risk Scoring</span>
+    </div>
+</div>
+
+## 🚀 Features
+
+| Feature | Description |
+|---------|-------------|
+| 📡 **Real-Time Simulation** | Automatic sensor data generation every 3 seconds |
+| 🧠 **AI Risk Scoring** | Multi-factor risk calculation (0-1 scale) |
+| 🔔 **Smart Alerts** | Automatic alerts for high-risk conditions |
+| 📊 **Historical Tracking** | SQLite database for all events |
+| 🔌 **REST API** | 14 endpoints with full documentation |
+
+## 📚 Quick Links
+
+- [GitHub Repository](https://github.com/ThabangMotsoahae/ops-twin-system)
+- [Live API](https://ops-twin-system-1.onrender.com)
+- [System Status](https://ops-twin-system-1.onrender.com/realtime/status)
     """,
     version="2.0.0",
     contact={
@@ -54,22 +66,31 @@ app = FastAPI(
     },
     docs_url="/docs",
     redoc_url="/redoc",
+    swagger_ui_parameters={
+        "persistAuthorization": True,
+        "displayRequestDuration": True,
+        "filter": True,
+        "tryItOutEnabled": True,
+        "syntaxHighlight": {
+            "theme": "monokai"
+        }
+    },
     openapi_tags=[
         {
             "name": "Core",
-            "description": "Asset state and risk management endpoints"
+            "description": "🎯 Asset state and risk management endpoints"
         },
         {
             "name": "Real-Time",
-            "description": "Live sensor data ingestion and monitoring"
+            "description": "📡 Live sensor data ingestion and monitoring"
         },
         {
             "name": "Alerts",
-            "description": "Alert configuration and history"
+            "description": "🔔 Alert configuration and history"
         },
         {
             "name": "Database",
-            "description": "Historical data storage and retrieval"
+            "description": "💾 Historical data storage and retrieval"
         }
     ]
 )
@@ -118,7 +139,7 @@ class BatchIngest(BaseModel):
     data: List[SensorData]
     batch_id: Optional[str] = None
 
-# ==================== CUSTOM SWAGGER UI ====================
+# ==================== CUSTOM SWAGGER UI WITH STYLING ====================
 
 @app.get("/docs", include_in_schema=False)
 async def custom_swagger_ui_html():
@@ -126,103 +147,176 @@ async def custom_swagger_ui_html():
     <!DOCTYPE html>
     <html>
     <head>
+        <meta charset="UTF-8">
         <title>OpsTwin API Documentation</title>
         <style>
-            /* Custom styling for Swagger UI */
-            .swagger-ui .topbar {
-                background-color: #1a1a2e;
-                padding: 10px 0;
+            /* Global styling */
+            body {
+                margin: 0;
+                padding: 0;
+                background: #f7fafc;
             }
-            .swagger-ui .topbar .download-url-wrapper .select-label {
-                color: #fff;
-            }
-            .swagger-ui .info .title {
-                color: #1a1a2e;
-                font-size: 36px;
-            }
-            .swagger-ui .info .title small {
-                background-color: #4a5568;
+            
+            /* Custom header */
+            .custom-header {
+                background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
                 color: white;
+                padding: 30px 20px;
+                text-align: center;
+                border-bottom: 4px solid #48bb78;
             }
+            
+            .custom-header h1 {
+                margin: 0;
+                font-size: 36px;
+                font-weight: 700;
+            }
+            
+            .custom-header .subtitle {
+                font-size: 18px;
+                opacity: 0.9;
+                margin-top: 10px;
+            }
+            
+            .stats-row {
+                display: flex;
+                justify-content: center;
+                gap: 15px;
+                margin-top: 20px;
+                flex-wrap: wrap;
+            }
+            
+            .stat-pill {
+                background: rgba(255,255,255,0.15);
+                padding: 8px 16px;
+                border-radius: 30px;
+                font-size: 14px;
+                font-weight: 500;
+            }
+            
+            .links-row {
+                margin-top: 20px;
+                display: flex;
+                justify-content: center;
+                gap: 20px;
+            }
+            
+            .links-row a {
+                color: #48bb78;
+                text-decoration: none;
+                font-weight: 500;
+            }
+            
+            .links-row a:hover {
+                text-decoration: underline;
+                color: #68d391;
+            }
+            
+            /* Swagger UI overrides */
+            .swagger-ui .topbar {
+                background-color: #0f172a;
+                padding: 10px 0;
+                display: none;
+            }
+            
+            .swagger-ui .info {
+                margin: 0;
+            }
+            
+            .swagger-ui .info .title {
+                display: none;
+            }
+            
+            .swagger-ui .info .description {
+                margin-top: 0;
+            }
+            
+            .swagger-ui .info .description .markdown p {
+                margin-top: 0;
+            }
+            
+            .swagger-ui .scheme-container {
+                background: #f7fafc;
+                box-shadow: none;
+                padding: 15px 0;
+            }
+            
+            .swagger-ui .opblock-tag {
+                background-color: #edf2f7;
+                border-left: 4px solid #48bb78;
+                font-weight: 600;
+            }
+            
+            .swagger-ui .opblock.opblock-get .opblock-summary-method {
+                background-color: #48bb78;
+            }
+            
+            .swagger-ui .opblock.opblock-post .opblock-summary-method {
+                background-color: #4299e1;
+            }
+            
             .swagger-ui .btn.authorize {
                 border-color: #48bb78;
                 color: #48bb78;
             }
+            
             .swagger-ui .btn.authorize svg {
                 fill: #48bb78;
             }
-            .swagger-ui .opblock-tag {
-                background-color: #f7fafc;
-                border-left: 4px solid #4299e1;
-            }
-            .swagger-ui .opblock.opblock-get .opblock-summary-method {
-                background-color: #48bb78;
-            }
-            .swagger-ui .opblock.opblock-post .opblock-summary-method {
-                background-color: #4299e1;
-            }
+            
             .swagger-ui .response-col_status {
                 font-weight: bold;
             }
-            /* Custom header */
-            .custom-header {
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                color: white;
-                padding: 20px;
+            
+            .swagger-ui .model-box {
+                background: #f7fafc;
+            }
+            
+            /* Footer */
+            .custom-footer {
                 text-align: center;
-                margin-bottom: 20px;
-                border-radius: 5px;
+                padding: 20px;
+                background: #f1f5f9;
+                color: #4a5568;
+                font-size: 14px;
+                border-top: 1px solid #e2e8f0;
+                margin-top: 30px;
             }
-            .custom-header h1 {
-                margin: 0;
-                font-size: 28px;
+            
+            .custom-footer a {
+                color: #48bb78;
+                text-decoration: none;
             }
-            .custom-header p {
-                margin: 10px 0 0;
-                opacity: 0.9;
-            }
-            .badge {
-                display: inline-block;
-                background-color: #48bb78;
-                color: white;
-                padding: 4px 8px;
-                border-radius: 4px;
-                font-size: 12px;
-                margin-left: 10px;
-            }
-            .stats-bar {
-                display: flex;
-                justify-content: center;
-                gap: 20px;
-                margin-top: 15px;
-                flex-wrap: wrap;
-            }
-            .stat-item {
-                background: rgba(255,255,255,0.2);
-                padding: 5px 12px;
-                border-radius: 20px;
-                font-size: 12px;
+            
+            .custom-footer a:hover {
+                text-decoration: underline;
             }
         </style>
         <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛰️</text></svg>">
     </head>
     <body>
         <div class="custom-header">
-            <h1>🛰️ OpsTwin API <span class="badge">v2.0.0</span></h1>
-            <p>Operational Digital Twin for Risk & Reliability | AI-Powered Asset Intelligence</p>
-            <div class="stats-bar">
-                <span class="stat-item">📡 6 Active Assets</span>
-                <span class="stat-item">⚡ Real-Time Updates (3s)</span>
-                <span class="stat-item">🎯 14 API Endpoints</span>
-                <span class="stat-item">🧠 AI Risk Scoring</span>
+            <h1>🛰️ OpsTwin API</h1>
+            <div class="subtitle">Operational Digital Twin for Risk & Reliability</div>
+            <div class="stats-row">
+                <span class="stat-pill">📡 6 Active Assets</span>
+                <span class="stat-pill">⚡ Real-Time (3s)</span>
+                <span class="stat-pill">🎯 14 Endpoints</span>
+                <span class="stat-pill">🧠 AI Risk Scoring</span>
+                <span class="stat-pill">📊 SQLite Database</span>
             </div>
-            <p style="font-size: 14px; margin-top: 15px;">
-                🔗 <a href="https://ops-twin-system-1.onrender.com" style="color: white;">Live API</a> | 
-                📚 <a href="https://github.com/ThabangMotsoahae/ops-twin-system" style="color: white;">GitHub</a> |
-                📊 <a href="/realtime/status" style="color: white;">System Status</a>
-            </p>
+            <div class="links-row">
+                <a href="https://github.com/ThabangMotsoahae/ops-twin-system" target="_blank">📚 GitHub Repository</a>
+                <a href="https://ops-twin-system-1.onrender.com/realtime/status" target="_blank">📊 System Status</a>
+                <a href="https://ops-twin-system-1.onrender.com/realtime/latest" target="_blank">🔍 Live Sensor Data</a>
+                <a href="https://ops-twin-system-1.onrender.com/metrics" target="_blank">📈 Metrics</a>
+            </div>
         </div>
         <div id="swagger-ui"></div>
+        <div class="custom-footer">
+            <p>Built with ❤️ using FastAPI | Powered by Render | MIT License</p>
+            <p>Created by <a href="https://github.com/ThabangMotsoahae" target="_blank">Thabang Motsoahae</a> | Axulo Technologies</p>
+        </div>
         <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui-bundle.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui-standalone-preset.js"></script>
         <script>
@@ -240,6 +334,10 @@ async def custom_swagger_ui_html():
                     filter: true,
                     tryItOutEnabled: true,
                     persistAuthorization: true,
+                    displayRequestDuration: true,
+                    syntaxHighlight: {
+                        theme: "monokai"
+                    }
                 });
                 window.ui = ui;
             };
@@ -390,14 +488,7 @@ def root():
 
 @app.get("/states", response_model=list[AssetState], tags=["Core"])
 def get_current_states():
-    """
-    Get current states for all assets
-    
-    Returns a list of all assets with their:
-    - Current health state (HEALTHY/WARNING/CRITICAL/FAILURE)
-    - Failure count and downtime hours
-    - Risk score (0-1 scale)
-    """
+    """Get current states for all assets"""
     try:
         df = assign_states(DATA_PATH)
         df_risk = compute_risk(df)
@@ -419,15 +510,7 @@ def get_current_states():
 
 @app.get("/risk/{asset_id}", tags=["Core"])
 def get_asset_risk(asset_id: str):
-    """
-    Get risk score for a specific asset
-    
-    Returns detailed information about a single asset including:
-    - Current state
-    - Risk score
-    - Failure history
-    - Downtime hours
-    """
+    """Get risk score for a specific asset"""
     try:
         df = assign_states(DATA_PATH)
         df_risk = compute_risk(df)
@@ -450,16 +533,7 @@ def get_asset_risk(asset_id: str):
 
 @app.get("/simulate/{steps}", response_model=list[RiskResponse], tags=["Core"])
 def simulate_future(steps: int):
-    """
-    Simulate state transitions for a number of steps
-    
-    Uses probabilistic Markov chain modeling to predict:
-    - How asset states will evolve over time
-    - Future risk scores
-    - Potential failure points
-    
-    Steps: 1-20 (inclusive)
-    """
+    """Simulate state transitions for a number of steps (1-20)"""
     if steps < 1 or steps > 20:
         raise HTTPException(status_code=400, detail="Steps must be between 1 and 20")
     
@@ -482,12 +556,7 @@ def simulate_future(steps: int):
 
 @app.get("/high-risk/{threshold}", tags=["Core"])
 def get_high_risk_assets(threshold: float):
-    """
-    Get assets with risk score above threshold
-    
-    Use this to identify assets requiring immediate attention.
-    Threshold should be between 0 and 1.
-    """
+    """Get assets with risk score above threshold (0-1)"""
     if threshold < 0 or threshold > 1:
         raise HTTPException(status_code=400, detail="Threshold must be between 0 and 1")
     
@@ -514,15 +583,7 @@ def get_high_risk_assets(threshold: float):
 
 @app.get("/metrics", tags=["Core"])
 def get_system_metrics():
-    """
-    Get system-wide metrics
-    
-    Returns:
-    - Total assets monitored
-    - State distribution (HEALTHY/WARNING/CRITICAL/FAILURE counts)
-    - Average and maximum risk scores
-    - Asset type breakdown
-    """
+    """Get system-wide metrics"""
     try:
         df = assign_states(DATA_PATH)
         df_risk = compute_risk(df)
@@ -581,21 +642,13 @@ def save_current_state():
 
 @app.post("/ingest/single", tags=["Real-Time"])
 def ingest_single_sensor_data(data: SensorData):
-    """
-    Ingest single sensor data point
-    
-    Send real-time sensor readings for a specific asset.
-    The system will automatically calculate a risk multiplier
-    based on temperature, vibration, error codes, and fuel level.
-    """
+    """Ingest single sensor data point"""
     try:
         data_dict = data.dict()
         
-        # Add timestamp if not provided
         if not data_dict.get('timestamp'):
             data_dict['timestamp'] = datetime.now().isoformat()
         
-        # Process the data
         process_sensor_data(data_dict)
         
         return {
@@ -609,12 +662,7 @@ def ingest_single_sensor_data(data: SensorData):
 
 @app.post("/ingest/batch", tags=["Real-Time"])
 def ingest_batch_sensor_data(batch: BatchIngest):
-    """
-    Ingest multiple sensor data points at once
-    
-    Send a batch of sensor readings for multiple assets.
-    Returns a summary of successful and failed ingestions.
-    """
+    """Ingest multiple sensor data points at once"""
     try:
         batch_id = batch.batch_id or str(uuid.uuid4())
         results = []
@@ -645,18 +693,7 @@ def ingest_batch_sensor_data(batch: BatchIngest):
 
 @app.get("/realtime/latest", tags=["Real-Time"])
 def get_latest_sensor_data(asset_id: Optional[str] = None):
-    """
-    Get latest sensor data for asset(s)
-    
-    Returns the most recent sensor readings including:
-    - Temperature, vibration, pressure
-    - Engine hours, fuel level
-    - Error codes
-    - Calculated risk multiplier
-    
-    If asset_id is provided, returns data for that asset only.
-    Otherwise, returns data for all assets.
-    """
+    """Get latest sensor data for asset(s)"""
     try:
         if asset_id:
             data = realtime_asset_data.get(asset_id)
@@ -682,14 +719,7 @@ def get_latest_sensor_data(asset_id: Optional[str] = None):
 
 @app.get("/realtime/status", tags=["Real-Time"])
 def get_realtime_status():
-    """
-    Get real-time ingestion system status
-    
-    Returns:
-    - Simulation status (running/stopped)
-    - Number of active assets
-    - Last update timestamp
-    """
+    """Get real-time ingestion system status"""
     return {
         "status": "running" if simulation_running else "stopped",
         "active_assets": len(realtime_asset_data),
@@ -698,16 +728,7 @@ def get_realtime_status():
 
 @app.post("/realtime/control", tags=["Real-Time"])
 def control_realtime_simulation(action: str):
-    """
-    Control real-time simulation (start/stop)
-    
-    Actions:
-    - 'start': Begin automatic sensor data generation (every 3 seconds)
-    - 'stop': Stop the simulation
-    
-    Simulation generates realistic sensor data for all 6 assets
-    with random temperature, vibration, and occasional error codes.
-    """
+    """Control real-time simulation (start/stop)"""
     if action.lower() == "start":
         if not simulation_running:
             start_simulation()
@@ -723,19 +744,12 @@ def control_realtime_simulation(action: str):
 
 @app.post("/realtime/trigger", tags=["Alerts"])
 def trigger_manual_alert(asset_id: str, alert_type: str = "warning", message: str = None):
-    """
-    Manually trigger an alert for testing
-    
-    Creates an alert in the database and optionally sends an email
-    if the alert system is configured.
-    """
+    """Manually trigger an alert for testing"""
     try:
         alert_msg = message or f"Manual alert triggered for {asset_id}"
         
-        # Save to database
         db_manager.save_alert(alert_type.upper(), asset_id, alert_msg)
         
-        # Try to send email if configured
         try:
             alert_system.send_alert(
                 subject=f"Manual Alert: {asset_id}",
