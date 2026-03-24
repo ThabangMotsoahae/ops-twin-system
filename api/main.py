@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 import pandas as pd
 import sys
@@ -20,10 +21,57 @@ from risk_model.risk_engine import compute_risk
 from risk_model.alert_system import alert_system
 from risk_model.database_manager import db_manager
 
+# ==================== CUSTOM STYLED APP ====================
+
 app = FastAPI(
     title="OpsTwin API",
-    description="Operational Digital Twin for Risk & Reliability",
-    version="2.0.0"
+    description="""
+    ## 🛰️ Operational Digital Twin for Risk & Reliability
+    
+    **OpsTwin** is a real-time operational intelligence system that monitors assets, 
+    predicts future states, and provides actionable risk insights.
+    
+    ### Features:
+    - 📡 **Real-time sensor simulation** (temperature, vibration, error codes)
+    - 🧠 **AI-powered risk scoring** (0-1 scale)
+    - 🔔 **Automatic alerts** for high-risk conditions
+    - 📊 **Historical data tracking** with SQLite
+    - 🚀 **REST API** with 14 endpoints
+    
+    ### Quick Links:
+    - [GitHub Repository](https://github.com/ThabangMotsoahae/ops-twin-system)
+    - [Live Demo](https://ops-twin-system-1.onrender.com)
+    """,
+    version="2.0.0",
+    contact={
+        "name": "Thabang Motsoahae",
+        "url": "https://github.com/ThabangMotsoahae",
+        "email": "thabangmotsoahae@axulo-inc.com",
+    },
+    license_info={
+        "name": "MIT License",
+        "url": "https://opensource.org/licenses/MIT",
+    },
+    docs_url="/docs",
+    redoc_url="/redoc",
+    openapi_tags=[
+        {
+            "name": "Core",
+            "description": "Asset state and risk management endpoints"
+        },
+        {
+            "name": "Real-Time",
+            "description": "Live sensor data ingestion and monitoring"
+        },
+        {
+            "name": "Alerts",
+            "description": "Alert configuration and history"
+        },
+        {
+            "name": "Database",
+            "description": "Historical data storage and retrieval"
+        }
+    ]
 )
 
 # Enable CORS
@@ -69,6 +117,136 @@ class SensorData(BaseModel):
 class BatchIngest(BaseModel):
     data: List[SensorData]
     batch_id: Optional[str] = None
+
+# ==================== CUSTOM SWAGGER UI ====================
+
+@app.get("/docs", include_in_schema=False)
+async def custom_swagger_ui_html():
+    return HTMLResponse(content="""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>OpsTwin API Documentation</title>
+        <style>
+            /* Custom styling for Swagger UI */
+            .swagger-ui .topbar {
+                background-color: #1a1a2e;
+                padding: 10px 0;
+            }
+            .swagger-ui .topbar .download-url-wrapper .select-label {
+                color: #fff;
+            }
+            .swagger-ui .info .title {
+                color: #1a1a2e;
+                font-size: 36px;
+            }
+            .swagger-ui .info .title small {
+                background-color: #4a5568;
+                color: white;
+            }
+            .swagger-ui .btn.authorize {
+                border-color: #48bb78;
+                color: #48bb78;
+            }
+            .swagger-ui .btn.authorize svg {
+                fill: #48bb78;
+            }
+            .swagger-ui .opblock-tag {
+                background-color: #f7fafc;
+                border-left: 4px solid #4299e1;
+            }
+            .swagger-ui .opblock.opblock-get .opblock-summary-method {
+                background-color: #48bb78;
+            }
+            .swagger-ui .opblock.opblock-post .opblock-summary-method {
+                background-color: #4299e1;
+            }
+            .swagger-ui .response-col_status {
+                font-weight: bold;
+            }
+            /* Custom header */
+            .custom-header {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 20px;
+                text-align: center;
+                margin-bottom: 20px;
+                border-radius: 5px;
+            }
+            .custom-header h1 {
+                margin: 0;
+                font-size: 28px;
+            }
+            .custom-header p {
+                margin: 10px 0 0;
+                opacity: 0.9;
+            }
+            .badge {
+                display: inline-block;
+                background-color: #48bb78;
+                color: white;
+                padding: 4px 8px;
+                border-radius: 4px;
+                font-size: 12px;
+                margin-left: 10px;
+            }
+            .stats-bar {
+                display: flex;
+                justify-content: center;
+                gap: 20px;
+                margin-top: 15px;
+                flex-wrap: wrap;
+            }
+            .stat-item {
+                background: rgba(255,255,255,0.2);
+                padding: 5px 12px;
+                border-radius: 20px;
+                font-size: 12px;
+            }
+        </style>
+        <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛰️</text></svg>">
+    </head>
+    <body>
+        <div class="custom-header">
+            <h1>🛰️ OpsTwin API <span class="badge">v2.0.0</span></h1>
+            <p>Operational Digital Twin for Risk & Reliability | AI-Powered Asset Intelligence</p>
+            <div class="stats-bar">
+                <span class="stat-item">📡 6 Active Assets</span>
+                <span class="stat-item">⚡ Real-Time Updates (3s)</span>
+                <span class="stat-item">🎯 14 API Endpoints</span>
+                <span class="stat-item">🧠 AI Risk Scoring</span>
+            </div>
+            <p style="font-size: 14px; margin-top: 15px;">
+                🔗 <a href="https://ops-twin-system-1.onrender.com" style="color: white;">Live API</a> | 
+                📚 <a href="https://github.com/ThabangMotsoahae/ops-twin-system" style="color: white;">GitHub</a> |
+                📊 <a href="/realtime/status" style="color: white;">System Status</a>
+            </p>
+        </div>
+        <div id="swagger-ui"></div>
+        <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui-bundle.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui-standalone-preset.js"></script>
+        <script>
+            window.onload = function() {
+                const ui = SwaggerUIBundle({
+                    url: "/openapi.json",
+                    dom_id: '#swagger-ui',
+                    presets: [
+                        SwaggerUIBundle.presets.apis,
+                        SwaggerUIStandalonePreset
+                    ],
+                    layout: "BaseLayout",
+                    deepLinking: true,
+                    displayOperationId: false,
+                    filter: true,
+                    tryItOutEnabled: true,
+                    persistAuthorization: true,
+                });
+                window.ui = ui;
+            };
+        </script>
+    </body>
+    </html>
+    """)
 
 # ==================== REAL-TIME DATA STORAGE ====================
 
@@ -186,7 +364,7 @@ async def shutdown_event():
 
 # ==================== CORE ENDPOINTS ====================
 
-@app.get("/")
+@app.get("/", tags=["Core"])
 def root():
     return {
         "system": "OpsTwin",
@@ -210,10 +388,15 @@ def root():
         ]
     }
 
-@app.get("/states", response_model=list[AssetState])
+@app.get("/states", response_model=list[AssetState], tags=["Core"])
 def get_current_states():
     """
     Get current states for all assets
+    
+    Returns a list of all assets with their:
+    - Current health state (HEALTHY/WARNING/CRITICAL/FAILURE)
+    - Failure count and downtime hours
+    - Risk score (0-1 scale)
     """
     try:
         df = assign_states(DATA_PATH)
@@ -234,10 +417,16 @@ def get_current_states():
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.get("/risk/{asset_id}")
+@app.get("/risk/{asset_id}", tags=["Core"])
 def get_asset_risk(asset_id: str):
     """
     Get risk score for a specific asset
+    
+    Returns detailed information about a single asset including:
+    - Current state
+    - Risk score
+    - Failure history
+    - Downtime hours
     """
     try:
         df = assign_states(DATA_PATH)
@@ -259,10 +448,17 @@ def get_asset_risk(asset_id: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.get("/simulate/{steps}", response_model=list[RiskResponse])
+@app.get("/simulate/{steps}", response_model=list[RiskResponse], tags=["Core"])
 def simulate_future(steps: int):
     """
     Simulate state transitions for a number of steps
+    
+    Uses probabilistic Markov chain modeling to predict:
+    - How asset states will evolve over time
+    - Future risk scores
+    - Potential failure points
+    
+    Steps: 1-20 (inclusive)
     """
     if steps < 1 or steps > 20:
         raise HTTPException(status_code=400, detail="Steps must be between 1 and 20")
@@ -284,10 +480,13 @@ def simulate_future(steps: int):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.get("/high-risk/{threshold}")
+@app.get("/high-risk/{threshold}", tags=["Core"])
 def get_high_risk_assets(threshold: float):
     """
     Get assets with risk score above threshold
+    
+    Use this to identify assets requiring immediate attention.
+    Threshold should be between 0 and 1.
     """
     if threshold < 0 or threshold > 1:
         raise HTTPException(status_code=400, detail="Threshold must be between 0 and 1")
@@ -313,10 +512,16 @@ def get_high_risk_assets(threshold: float):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.get("/metrics")
+@app.get("/metrics", tags=["Core"])
 def get_system_metrics():
     """
     Get system-wide metrics
+    
+    Returns:
+    - Total assets monitored
+    - State distribution (HEALTHY/WARNING/CRITICAL/FAILURE counts)
+    - Average and maximum risk scores
+    - Asset type breakdown
     """
     try:
         df = assign_states(DATA_PATH)
@@ -334,7 +539,7 @@ def get_system_metrics():
 
 # ==================== ALERT ENDPOINTS ====================
 
-@app.post("/configure-alerts")
+@app.post("/configure-alerts", tags=["Alerts"])
 def configure_alerts(email_from: str, email_password: str, email_to: list[str]):
     """Configure email alert system"""
     try:
@@ -343,7 +548,7 @@ def configure_alerts(email_from: str, email_password: str, email_to: list[str]):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.get("/alerts/history")
+@app.get("/alerts/history", tags=["Alerts"])
 def get_alert_history(limit: int = 50):
     """Get alert history"""
     try:
@@ -352,7 +557,7 @@ def get_alert_history(limit: int = 50):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.get("/assets/history/{asset_id}")
+@app.get("/assets/history/{asset_id}", tags=["Database"])
 def get_asset_history(asset_id: str, limit: int = 100):
     """Get historical data for an asset"""
     try:
@@ -361,7 +566,7 @@ def get_asset_history(asset_id: str, limit: int = 100):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.post("/save-state")
+@app.post("/save-state", tags=["Database"])
 def save_current_state():
     """Save current asset states to database"""
     try:
@@ -374,10 +579,14 @@ def save_current_state():
 
 # ==================== REAL-TIME DATA INGESTION ENDPOINTS ====================
 
-@app.post("/ingest/single")
+@app.post("/ingest/single", tags=["Real-Time"])
 def ingest_single_sensor_data(data: SensorData):
     """
     Ingest single sensor data point
+    
+    Send real-time sensor readings for a specific asset.
+    The system will automatically calculate a risk multiplier
+    based on temperature, vibration, error codes, and fuel level.
     """
     try:
         data_dict = data.dict()
@@ -398,10 +607,13 @@ def ingest_single_sensor_data(data: SensorData):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.post("/ingest/batch")
+@app.post("/ingest/batch", tags=["Real-Time"])
 def ingest_batch_sensor_data(batch: BatchIngest):
     """
     Ingest multiple sensor data points at once
+    
+    Send a batch of sensor readings for multiple assets.
+    Returns a summary of successful and failed ingestions.
     """
     try:
         batch_id = batch.batch_id or str(uuid.uuid4())
@@ -431,10 +643,19 @@ def ingest_batch_sensor_data(batch: BatchIngest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.get("/realtime/latest")
+@app.get("/realtime/latest", tags=["Real-Time"])
 def get_latest_sensor_data(asset_id: Optional[str] = None):
     """
     Get latest sensor data for asset(s)
+    
+    Returns the most recent sensor readings including:
+    - Temperature, vibration, pressure
+    - Engine hours, fuel level
+    - Error codes
+    - Calculated risk multiplier
+    
+    If asset_id is provided, returns data for that asset only.
+    Otherwise, returns data for all assets.
     """
     try:
         if asset_id:
@@ -459,10 +680,15 @@ def get_latest_sensor_data(asset_id: Optional[str] = None):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.get("/realtime/status")
+@app.get("/realtime/status", tags=["Real-Time"])
 def get_realtime_status():
     """
     Get real-time ingestion system status
+    
+    Returns:
+    - Simulation status (running/stopped)
+    - Number of active assets
+    - Last update timestamp
     """
     return {
         "status": "running" if simulation_running else "stopped",
@@ -470,10 +696,17 @@ def get_realtime_status():
         "last_update": datetime.now().isoformat()
     }
 
-@app.post("/realtime/control")
+@app.post("/realtime/control", tags=["Real-Time"])
 def control_realtime_simulation(action: str):
     """
     Control real-time simulation (start/stop)
+    
+    Actions:
+    - 'start': Begin automatic sensor data generation (every 3 seconds)
+    - 'stop': Stop the simulation
+    
+    Simulation generates realistic sensor data for all 6 assets
+    with random temperature, vibration, and occasional error codes.
     """
     if action.lower() == "start":
         if not simulation_running:
@@ -488,10 +721,13 @@ def control_realtime_simulation(action: str):
     else:
         raise HTTPException(status_code=400, detail="Action must be 'start' or 'stop'")
 
-@app.post("/realtime/trigger")
+@app.post("/realtime/trigger", tags=["Alerts"])
 def trigger_manual_alert(asset_id: str, alert_type: str = "warning", message: str = None):
     """
     Manually trigger an alert for testing
+    
+    Creates an alert in the database and optionally sends an email
+    if the alert system is configured.
     """
     try:
         alert_msg = message or f"Manual alert triggered for {asset_id}"
