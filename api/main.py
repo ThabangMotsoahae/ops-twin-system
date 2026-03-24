@@ -4,6 +4,8 @@ from pydantic import BaseModel
 import pandas as pd
 import sys
 from pathlib import Path
+from risk_model.alert_system import alert_system
+from risk_model.database_manager import db_manager
 
 # Add parent directory to path so we can import modules
 sys.path.append(str(Path(__file__).parent.parent))
@@ -179,6 +181,44 @@ def get_system_metrics():
             "max_risk": float(df_risk["risk_score"].max()),
             "assets_by_type": df_risk["asset_type"].value_counts().to_dict()
         }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/configure-alerts")
+def configure_alerts(email_from: str, email_password: str, email_to: list[str]):
+    """Configure email alert system"""
+    try:
+        alert_system.configure_email(email_from, email_password, email_to)
+        return {"status": "success", "message": "Email alerts configured"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/alerts/history")
+def get_alert_history(limit: int = 50):
+    """Get alert history"""
+    try:
+        df = db_manager.get_alert_history(limit)
+        return df.to_dict(orient='records')
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/assets/history/{asset_id}")
+def get_asset_history(asset_id: str, limit: int = 100):
+    """Get historical data for an asset"""
+    try:
+        df = db_manager.get_history(asset_id, limit)
+        return df.to_dict(orient='records')
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/save-state")
+def save_current_state():
+    """Save current asset states to database"""
+    try:
+        df = assign_states(DATA_PATH)
+        df_risk = compute_risk(df)
+        db_manager.save_asset_states(df_risk)
+        return {"status": "success", "message": "State saved to database"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
