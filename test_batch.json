@@ -1,0 +1,15 @@
+{
+  "data": [
+    {
+      "asset_id": "TRK001",
+      "temperature": 75.0,
+      "vibration": 6.5
+    },
+    {
+      "asset_id": "DRL001",
+      "temperature": 82.0,
+      "vibration": 8.2,
+      "error_code": "E202"
+    }
+  ]
+}
