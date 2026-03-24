@@ -6,7 +6,7 @@ import plotly.graph_objects as go
 from datetime import datetime
 
 # API Configuration
-API_URL = "http://localhost:8000"
+API_URL = "https://ops-twin-system-1.onrender.com"
 
 st.set_page_config(
     page_title="OpsTwin Dashboard",
