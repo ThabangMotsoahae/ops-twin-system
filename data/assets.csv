@@ -1,0 +1,7 @@
+asset_id,asset_type,location,hours_operated,failure_count,downtime_hours,last_maintenance_days
+TRK001,Truck,Section_A,1200,2,5,12
+TRK002,Truck,Section_B,800,5,12,30
+DRL001,Drill,Section_A,1500,7,20,45
+DRL002,Drill,Section_C,600,1,2,5
+LDR001,Loader,Section_B,1100,4,10,20
+LDR002,Loader,Section_C,400,0,1,3
